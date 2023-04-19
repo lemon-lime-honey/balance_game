@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand bg-body-tertiary mb-3">
+  <div class="container-fluid d-flex justify-content-between">
+    <a href="{% url 'posts:index' %}" class="navbar-brand">TITLE</a>
+    <div>
+      <ul class="navbar-nav">
+        {% if request.user.is_authenticated %}
+        <li class="nav-item me-3" style="line-height: 2.5;">
+          <a href="#bar" data-bs-toggle="offcanvas" role="button" style="color: inherit; text-decoration: none;" class="ms-2"><b>{{ user }}</b>님</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a href="{% url 'accounts:signup' %}" class="btn btn-outline-danger nav-link me-3">회원가입</a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary nav-link">로그인</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="bar">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="barLabel">안녕하세요, <span onclick="location.href='{% url 'accounts:profile' user.pk %}'" style="cursor: pointer;">{{ request.user }}님</span></h5>
+    <form action="{% url 'accounts:logout' %}" method="POST">
+      {% csrf_token %}
+      <button type="sumbit" class="btn btn-sm btn-outline-danger">로그아웃</button>
+    </form>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <a href="{% url 'posts:create' %}" class="mb-2 fs-3" style="color: inherit; text-decoration: none;">게시글 작성</a>
+  </div>
+</div>
