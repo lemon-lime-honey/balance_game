@@ -113,7 +113,7 @@ def select(request, post_pk, selection):
 @login_required
 def comment_like(request, post_pk, comment_pk):
     comment = Comment.objects.get(pk=comment_pk)
-    if request.user in comment.like_users.all():
+    if comment.like_users.filter(pk=request.user.pk).exists():
         comment.like_users.remove(request.user)
     else:
         comment.like_users.add(request.user)

@@ -1,56 +1,124 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ post.title }}{% endblock title %}
+
 {% block body %}
-<div class="card">
+<div class="card w-50 m-auto">
   <div class="card-body text-center">
-    <h3 class="card-title">{{ post.title }}</h3>
+    <div class="d-flex justify-content-between align-items-center">
+      <table class="table text-center table-sm table-borderless m-0" style="font-size: 10pt; width: 10%;">
+        <tbody>
+          <tr>
+            <th scope="row">
+              <form action="{% url 'posts:like' post.pk %}">
+                {% csrf_token %}
+                {% if request.user in post.like_users.all %}
+                  <input type="submit" value="&heartsuit;" class="btn btn-sm">
+                {% else %}
+                  <input type="submit" value="&#9825;" class="btn btn-sm">
+                {% endif %}
+              </form>
+            </th>
+            <td class="align-middle">{{ post.like_users.count }}</td>
+          </tr>
+          <tr>
+            <th scope="row">
+              댓글
+            </th>
+            <td>{{ comments.count }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <h2 class="card-title">{{ post.title }}</h2>
+      <div onclick="location.href='{% url 'accounts:profile' post.user %}'" style="cursor: pointer;">{{ post.user }}</div>
+    </div>
+    <hr>
     <div class="d-flex">
       <div class="col-6">
-        {{ post.select1_content }} <br>
+        <p class="fs-2">{{ post.select1_users.count }}</p>
         <form action="{% url 'posts:select' post.pk 1 %}" method="POST">
           {% csrf_token %}
-          <input type="submit" value="선택">
+          <input type="submit" value="{{ post.select1_content }}" class="btn fs-4">
         </form>
-        <div>{{ post.select1_users.count }}</div>
       </div>
       <div class="col-6">
-        {{ post.select2_content }} <br>
+        <p class="fs-2">{{ post.select2_users.count }}</p>
         <form action="{% url 'posts:select' post.pk 2 %}" method="POST">
           {% csrf_token %}
-          <input type="submit" value="선택">
+          <input type="submit" value="{{ post.select2_content }}" class="btn fs-4">
         </form>
-        <div>{{ post.select2_users.count }}</div>
       </div>
     </div>
   </div>
-</div>
-<form action="{% url 'posts:like' post.pk %}" method="POST">
-  {% csrf_token %}
-  <input type="submit" value="좋아요">
-</form>
-<div>좋아요 : {{ post.like_users.count }}</div>
-{% if request.user == post.user %}
-  <a href="{% url 'posts:update' post.pk %}">수정하기</a>
-  <form action="{% url 'posts:delete' post.pk %}" method="POST">
-    {% csrf_token %}
-    <input type="submit" value="삭제">
-  </form>
-{% endif %}
-
-<div>
-  <form action="{% url 'posts:comment_create' post.pk %}" method="POST">
-    {% csrf_token %}
-    {{ comment_form }}
-    <input type="submit" value="저장">
-  </form>
-  {% for comment in comments %}
-    <div>{{ comment.user }} - {{ comment.content }}</div>
-    {% if request.user == comment.user %}
-      <form action="{% url 'posts:comment_delete' post.pk comment.pk %}" method="POST">
+  <div class="card-footer d-flex justify-content-between">
+    <div>
+      <a href="{% url 'posts:index' %}" class="btn btn-secondary">메인</a>
+    </div>
+    <div class="d-flex">
+      <form action="{% url 'posts:delete' post.pk %}" method="POST">
         {% csrf_token %}
-        <input type="submit" value="삭제">
+        <input type="submit" value="삭제" class="btn btn-danger me-2" {% if request.user != post.user %}disabled{% endif %}>
       </form>
-    {% endif %}
-  {% endfor %}
+      <a href="{% url 'posts:update' post.pk %}" class="btn btn-primary {% if request.user != post.user %}disabled{% endif %}" >수정</a>
+    </div>
+  </div>
+</div>
+<div class="container w-50 mt-3">
+  <table class="table table-borderless">
+    <tr>
+      {% if request.user.is_authenticated %}
+        <form action="{% url 'posts:comment_create' post.pk %}" method="POST">
+          {% csrf_token %}
+          <td style="width: 100%">
+            {{ comment_form.content }}
+          </td>
+          <td>
+            <input type="submit" class="btn btn-sm btn-outline-dark" value="등록">
+          </td>
+        </form>
+      {% else %}
+        <td class="text-center" colspan="2">댓글을 작성할 권한이 없습니다</td>
+      {% endif %}
+      </tr>
+  </table>
+  <table class="table">
+    <tbody>
+      {% for comment in comments %}
+        <tr>
+          <td style="width: 10%;">
+            <div>
+              <span onclick="location.href='{% url 'accounts:profile' comment.user %}'" style="cursor: pointer;">{{ comment.user }}</span>
+            </div>
+          </td>
+          <td {% if request.user != comment.user %}colspan="2"{% endif %} class="align-middle" style="width: 80%;">
+            <div class="d-flex justify-content-between">
+              <div>{{ comment.content }}</div>
+              <form action="{% url 'posts:comment_like' post.pk comment.pk %}" method="POST">
+                {% csrf_token %}
+                {% if request.user in comment.like_users.all %}
+                  <input type="submit" value="&heartsuit; {{ comment.like_users.count }}" class="btn btn-sm">
+                {% else %}
+                  <input type="submit" value="&#9825; {{ comment.like_users.count }}" class="btn btn-sm">
+                {% endif %}
+              </form>
+            </div>
+          </td>
+          {% if request.user == comment.user %}
+          <td class="align-middle">
+            <form action="{% url 'posts:comment_delete' post.pk comment.pk %}" method="POST">
+              {% csrf_token %}
+              <input type="submit" class="btn btn-sm btn-danger" value="삭제">
+            </form>
+          </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock body %}
+
+{% block script %}
+const comment_content = document.getElementById('id_content')
+comment_content.style.width = '100%'
+{% endblock script %}
