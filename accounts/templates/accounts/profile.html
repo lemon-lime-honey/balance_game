@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+{{ person}}
+{{ person.email }}
+
+
+<div>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#followings">
+    팔로잉{{ followings|length }}
+  </button>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#followers">
+    팔로워{{ followers|length }}
+  </button>
+</div>
+
+
+<form action="{% url 'accounts:follow' person.pk %}" method="POST">
+  {% csrf_token %}
+  {% if request.user in person.followers.all %}
+  <input type="submit" value='언팔로우' {% if not request.user.is_authenticated %}disabled{% endif %}>
+  {% else %}
+  <input type="submit" value='팔로우' {% if not request.user.is_authenticated %}disabled{% endif %}>
+  {% endif %}
+</form>
+{% for post in posts %}
+  <a href="{% url 'posts:detail' post.pk %}">{{ post.title }}</a>
+  
+{% endfor %}
+
+
+<div class="modal fade" id="followings" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">팔로잉</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% for following in followings %}
+          <a href="{% url 'accounts:profile' following %}">{{ following }}</a>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="followers" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">팔로워</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% for follower in followers %}
+        <a href="{% url 'accounts:profile' follower %}">{{ follower }}</a>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock body %}

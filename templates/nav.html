@@ -21,7 +21,7 @@
 </nav>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="bar">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="barLabel">안녕하세요, <span onclick="location.href='{% url 'accounts:profile' user.pk %}'" style="cursor: pointer;">{{ request.user }}님</span></h5>
+    <h5 class="offcanvas-title" id="barLabel">안녕하세요, <span onclick="location.href='{% url 'accounts:profile' user %}'" style="cursor: pointer;">{{ request.user }}님</span></h5>
     <form action="{% url 'accounts:logout' %}" method="POST">
       {% csrf_token %}
       <button type="sumbit" class="btn btn-sm btn-outline-danger">로그아웃</button>

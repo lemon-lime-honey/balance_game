@@ -5,17 +5,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 from .forms import CustomUserCreationForm
-
+from posts.models import Post
 
 def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
+    posts = Post.objects.filter(user=person)
     followings = person.followings.all()
     followers = person.followers.all()
     context = {
         'person': person,
         'followings': followings,
         'followers': followers,
+        'posts': posts,
     }
     return render(request, 'accounts/profile.html', context)
 
