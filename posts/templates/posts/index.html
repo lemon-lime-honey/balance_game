@@ -1,24 +1,30 @@
 {% extends 'base.html' %}
 
-
 {% block title %}
 밸런스 게임
 {% endblock title %}
-
 
 {% block body %}
 <div class="container">
   <div class="row">
     {% for post in posts %}
-      <div class="col-4">
+      <div class="col-4 mb-4">
         <div class="card text-center" onclick="location.href='{% url 'posts:detail' post.pk %}'" style="cursor: pointer;">
-          <div class="card-header">
+          <div class="card-header fs-4 text-truncate" style="background-color: #E6E6FA;">
             {{ post.title }}
           </div>
           <div class="card-body">
-            <p>{{ post.select1_content }}</p>
-            <p>vs</p>
-            <p>{{ post.select2_content }}</p>
+            <div class="d-flex align-items-center">
+              <div class="col-5">
+                <div class="fs-1 mb-2 text-truncate">{{ post.select1_content }}</div>
+                <div class="fs-5">{{ post.select1_users.count }}</div>
+              </div>
+              <div class="col-2 fs-4">VS</div>
+              <div class="col-5">
+                <div class="fs-1 mb-2 text-truncate">{{ post.select2_content }}</div>
+                <div class="fs-5">{{ post.select2_users.count }}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -27,7 +33,6 @@
   </div>
 </div>
 {% endblock body %}
-
 
 {% block script %}
 
