@@ -1,11 +1,11 @@
-<nav class="navbar navbar-expand bg-body-tertiary mb-3">
+<nav class="navbar navbar-expand-lg mb-3" style="height: 80px; background-color:	#F0F8FF;">
   <div class="container-fluid d-flex justify-content-between">
-    <a href="{% url 'posts:index' %}" class="navbar-brand">TITLE</a>
+    <a href="{% url 'posts:index' %}" class="navbar-brand ms-5 fs-3">밸런스 게임</a>
     <div>
       <ul class="navbar-nav">
         {% if request.user.is_authenticated %}
         <li class="nav-item me-3" style="line-height: 2.5;">
-          <a href="#bar" data-bs-toggle="offcanvas" role="button" style="color: inherit; text-decoration: none;" class="ms-2"><b>{{ user }}</b>님</a>
+          <a href="#bar" data-bs-toggle="offcanvas" role="button" style="color: inherit; text-decoration: none;" class="ms-2 me-5 fs-4"><b>{{ user }}</b>님</a>
         </li>
         {% else %}
         <li class="nav-item">
@@ -20,15 +20,16 @@
   </div>
 </nav>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="bar">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="barLabel">안녕하세요, <span onclick="location.href='{% url 'accounts:profile' user %}'" style="cursor: pointer;">{{ request.user }}님</span></h5>
+  <div class="offcanvas-header mt-3">
+    <h5 class="offcanvas-title ms-3" id="barLabel">안녕하세요, <span onclick="location.href='{% url 'accounts:profile' user %}'" style="cursor: pointer;">{{ request.user }}님</span></h5>
     <form action="{% url 'accounts:logout' %}" method="POST">
       {% csrf_token %}
       <button type="sumbit" class="btn btn-sm btn-outline-danger">로그아웃</button>
     </form>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
-  <div class="offcanvas-body">
-    <a href="{% url 'posts:create' %}" class="mb-2 fs-3" style="color: inherit; text-decoration: none;">게시글 작성</a>
+  <hr>
+  <div class="offcanvas-body text-center">
+    <a href="{% url 'posts:create' %}" class="mb-2 fs-3" style="color: inherit; text-decoration: none;">게임 생성</a>
   </div>
 </div>
