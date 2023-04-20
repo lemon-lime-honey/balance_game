@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="card">
+  <div class="card-body text-center">
+    <h3 class="card-title">{{ post.title }}</h3>
+    <div class="d-flex">
+      <div class="col-6">
+        {{ post.select1_content }} <br>
+        <form action="{% url 'posts:select' post.pk 1 %}" method="POST">
+          {% csrf_token %}
+          <input type="submit" value="선택">
+        </form>
+        <div>{{ post.select1_users.count }}</div>
+      </div>
+      <div class="col-6">
+        {{ post.select2_content }} <br>
+        <form action="{% url 'posts:select' post.pk 2 %}" method="POST">
+          {% csrf_token %}
+          <input type="submit" value="선택">
+        </form>
+        <div>{{ post.select2_users.count }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<form action="{% url 'posts:like' post.pk %}" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="좋아요">
+</form>
+<div>좋아요 : {{ post.like_users.count }}</div>
+{% if request.user == post.user %}
+  <a href="{% url 'posts:update' post.pk %}">수정하기</a>
+  <form action="{% url 'posts:delete' post.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="삭제">
+  </form>
+{% endif %}
+
+<div>
+  <form action="{% url 'posts:comment_create' post.pk %}" method="POST">
+    {% csrf_token %}
+    {{ comment_form }}
+    <input type="submit" value="저장">
+  </form>
+  {% for comment in comments %}
+    <div>{{ comment.user }} - {{ comment.content }}</div>
+    {% if request.user == comment.user %}
+      <form action="{% url 'posts:comment_delete' post.pk comment.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="삭제">
+      </form>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endblock body %}

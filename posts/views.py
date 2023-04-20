@@ -13,7 +13,7 @@ def index(request):
     return render(request, 'posts/index.html', context)
 
 
-@login_required
+# @login_required
 def create(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -97,6 +97,17 @@ def like(request, post_pk):
     else:
         post.like_users.add(request.user)
     return redirect('posts:detail', post_pk)
+
+
+@login_required
+def select(request, post_pk, selection):
+    post = Post.objects.get(pk=post_pk)
+    if (request.user not in post.select1_users.all()) and (request.user not in post.select2_users.all()):
+        if selection == 1:
+            post.select1_users.add(request.user)
+        else:
+            post.select2_users.add(request.user)
+    return redirect('posts:detail', post.pk)
 
 
 @login_required
