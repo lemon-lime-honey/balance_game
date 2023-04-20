@@ -1,72 +1,86 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ person }}{% endblock title %}
+
+{% block style %}
+#header {
+  background-color: #B0C4DE;
+}
+
+#follow {
+  border: 0;
+}
+{% endblock style %}
+
 
 {% block body %}
-
-{{ person}}
-{{ person.email }}
-
-
-<div>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#followings">
-    팔로잉{{ followings|length }}
-  </button>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#followers">
-    팔로워{{ followers|length }}
-  </button>
+<div class="card m-auto w-50">
+  <div class="card-header d-flex justify-content-between" id="header">
+    <div class="d-flex m-3 align-items-center">
+      <h3 class="m-0 me-2">{{ person }}</h3>
+      {% if request.user != person %}
+        <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+          {% csrf_token %}
+          {% if request.user in person.followers.all %}
+          <input type="submit" value='언팔로우' class="btn btn-sm btn-outline-primary" {% if not request.user.is_authenticated %}disabled{% endif %}>
+          {% else %}
+          <input type="submit" value='팔로우' class="btn btn-sm btn-primary" {% if not request.user.is_authenticated %}disabled{% endif %}>
+          {% endif %}
+        </form>
+      {% endif %}
+    </div>
+    <div class="d-flex align-items-center">
+      <button type="button" class="btn btn-sm me-1" data-bs-toggle="modal" data-bs-target="#followings" id="follow">
+        팔로잉 {{ followings|length }}
+      </button>
+      <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#followers" id="follow">
+        팔로워 {{ followers|length }}
+      </button>
+    </div>
+  </div>
+  <ul class="list-group list-group-flush mb-2">
+    <li class="list-group-item text-center fs-4 my-2"><b>작성글</b></li>
+    {% for post in posts %}
+      <li class="list-group-item">
+        <a href="{% url 'posts:detail' post.pk %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ post.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
 </div>
 
-
-<form action="{% url 'accounts:follow' person.pk %}" method="POST">
-  {% csrf_token %}
-  {% if request.user in person.followers.all %}
-  <input type="submit" value='언팔로우' {% if not request.user.is_authenticated %}disabled{% endif %}>
-  {% else %}
-  <input type="submit" value='팔로우' {% if not request.user.is_authenticated %}disabled{% endif %}>
-  {% endif %}
-</form>
-{% for post in posts %}
-  <a href="{% url 'posts:detail' post.pk %}">{{ post.title }}</a>
-  
-{% endfor %}
-
-
-<div class="modal fade" id="followings" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="followings" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">팔로잉</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-4" id="followingsModalLabel">팔로잉</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         {% for following in followings %}
-          <a href="{% url 'accounts:profile' following %}">{{ following }}</a>
+          <a href="{% url 'accounts:profile' following %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ following }}</a>
         {% endfor %}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
       </div>
     </div>
   </div>
 </div>
 
-
-<div class="modal fade" id="followers" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="followers" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">팔로워</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-4" id="followersModalLabel">팔로워</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         {% for follower in followers %}
-        <a href="{% url 'accounts:profile' follower %}">{{ follower }}</a>
+        <a href="{% url 'accounts:profile' follower %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ follower }}</a>
         {% endfor %}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
       </div>
     </div>
   </div>
