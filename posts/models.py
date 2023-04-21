@@ -10,6 +10,8 @@ class Post(models.Model):
     title = models.CharField(max_length=50)
     select1_content = models.CharField(max_length=100)
     select2_content = models.CharField(max_length=100)
+    select1_image = models.ImageField(blank=True)
+    select2_image = models.ImageField(blank=True)
 
 
 class Comment(models.Model):
