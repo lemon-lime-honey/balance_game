@@ -23,7 +23,7 @@
                 <img src="{% static 'blank.png' %}" alt="post.select1_content" class="w-100">
                 {% endif %}
                 <div class="fs-1 mb-2 text-truncate">{{ post.select1_content }}</div>
-                <div class="fs-5">{{ post.select1_users.count }}</div>
+                <div class="fs-5">{{ post.select1_users__count }}</div>
               </div>
               <div class="col-2 fs-4">VS</div>
               <div class="col-5">
@@ -33,7 +33,7 @@
                 <img src="{% static 'blank.png' %}" alt="post.select2_content" class="w-100">
                 {% endif %}
                 <div class="fs-1 mb-2 text-truncate">{{ post.select2_content }}</div>
-                <div class="fs-5">{{ post.select2_users.count }}</div>
+                <div class="fs-5">{{ post.select2_users__count }}</div>
               </div>
             </div>
           </div>
