@@ -6,6 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 from .forms import CustomUserCreationForm
 from posts.models import Post
+from django.http import JsonResponse
 from django.db.models import Count, Prefetch
 
 
@@ -63,9 +64,18 @@ def signup(request):
 def follow(request, user_pk):
     User = get_user_model()
     person = User.objects.get(pk=user_pk)
+
     if person != request.user:
         if person.followers.filter(pk=request.user.pk).exists():
             person.followers.remove(request.user)
+            is_followed = False
         else:
             person.followers.add(request.user)
+            is_followed = True
+        context = {
+            'is_followed': is_followed,
+            'followings_count': person.followings.count(),
+            'followers_count': person.followers.count(),   
+        }
+        return JsonResponse(context)
     return redirect('accounts:profile', person.username)
