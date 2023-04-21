@@ -128,6 +128,8 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
+    'posts/static/',
+    'accounts/static/'
 ]
 
 MEDIA_ROOT = BASE_DIR / 'media'
