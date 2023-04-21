@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 밸런스 게임
@@ -16,11 +17,21 @@
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="col-5">
+                {% if post.select1_image %}
+                <img src="{{ post.select1_image.url }}" alt="post.select1_content" class="w-100 object-fit-cover" style="aspect-ratio: 1;">
+                {% else %}
+                <img src="{% static 'blank.png' %}" alt="post.select1_content" class="w-100">
+                {% endif %}
                 <div class="fs-1 mb-2 text-truncate">{{ post.select1_content }}</div>
                 <div class="fs-5">{{ post.select1_users.count }}</div>
               </div>
               <div class="col-2 fs-4">VS</div>
               <div class="col-5">
+                {% if post.select2_image %}
+                <img src="{{ post.select2_image.url }}" alt="post.select2_content" class="w-100 object-fit-cover" style="aspect-ratio: 1;">
+                {% else %}
+                <img src="{% static 'blank.png' %}" alt="post.select2_content" class="w-100">
+                {% endif %}
                 <div class="fs-1 mb-2 text-truncate">{{ post.select2_content }}</div>
                 <div class="fs-5">{{ post.select2_users.count }}</div>
               </div>
@@ -29,7 +40,6 @@
         </div>
       </div>
     {% endfor %}
-
   </div>
 </div>
 {% endblock body %}
