@@ -23,7 +23,7 @@
 {% endblock title %}
 
 {% block body %}
-<div class="container" style="width: 40%;">
+<div class="container col-12 col-md-4 offset-md-4">
   <h1 class="my-5 text-center">로그인</h1>
   <form action="{% url 'accounts:login' %}" method='POST'>
     {% csrf_token %}

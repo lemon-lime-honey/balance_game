@@ -8,7 +8,7 @@
 <div class="container">
   <div class="row">
     {% for post in posts %}
-      <div class="col-4 mb-4">
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
         <div class="card text-center" onclick="location.href='{% url 'posts:detail' post.pk %}'" style="cursor: pointer;">
           <div class="card-header fs-4 text-truncate" style="background-color: #E6E6FA;">
             {{ post.title }}

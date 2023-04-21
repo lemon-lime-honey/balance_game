@@ -23,7 +23,7 @@
 {% endblock style %}
 
 {% block body %}
-<div class="container w-50">
+<div class="container col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
   <h1 class="my-5 text-center">게임 생성</h1>
   <form action="{% url 'posts:create' %}" method="POST">
     {% csrf_token %}
@@ -49,7 +49,6 @@
   </form>
 </div>
 {% endblock body %}
-
 
 {% block script %}
 {% endblock script %}
