@@ -75,24 +75,10 @@ def follow(request, user_pk):
         else:
             person.followers.add(request.user)
             is_followed = True
-            context = {
-                'is_followed': is_followed,
-                'followings_count': person.followings.count(),
-                'followers_count': person.followers.count(),   
-            }
-            return JsonResponse(context)
-    # if person != request.user:
-    #     if request.user in person.followers.all():
-    #         person.followers.remove(request.user)
-    #         is_followed = False
-    #     else:
-    #         person.followers.add()
-    #         is_followed = True
-    #     context = {
-    #         'is_followed': is_followed,
-    #         'followings_count': person.followings.count(),
-    #         'followers_count': person.followers.count(),
-            
-    #     }
-    #     return JsonResponse(context)
+        context = {
+            'is_followed': is_followed,
+            'followings_count': person.followings.count(),
+            'followers_count': person.followers.count(),   
+        }
+        return JsonResponse(context)
     return redirect('accounts:profile', person.username)
