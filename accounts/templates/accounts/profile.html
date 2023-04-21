@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ person }}{% endblock title %}
 
@@ -11,7 +12,6 @@
   border: 0;
 }
 {% endblock style %}
-
 
 {% block body %}
 <div class="card col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
@@ -50,6 +50,7 @@
   </ul>
 </div>
 
+<!-- 팔로우 관련 모달 -->
 <div class="modal fade" id="followings" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -87,40 +88,5 @@
     </div>
   </div>
 </div>
-
+<script type='text/javascript' src="{% static 'accounts/js/profile.js' %}"></script>
 {% endblock body %}
-
-
-{% block script %}
-<script>
-  const form = document.querySelector('#follow-form')
-  const csrftoken =  document.querySelector('[name=csrfmiddlewaretoken]').value
-  form.addEventListener('submit', function (event) {
-    event.preventDefault()
-    const userId = event.target.dataset.userId
-    axios({
-      method:'POST',
-      url:`/accounts/follow/${userId}/`,
-      headers: {'X-CSRFToken':csrftoken,}
-    })
-    .then((response) => {
-      console.log(response.data)
-      const isFollowed = response.data.is_followed
-      const followBtn = document.querySelector('#follow-form > input[type=submit]')
-      if (isFollowed === true) {
-        followBtn.value = '언팔로우'
-      } else {
-        followBtn.value = '팔로우'
-      }
-      const followingsCountTag = document.querySelector('#followings-count')
-      const followersCountTag = document.querySelector('#followers-count')
-      const followingsCountData = response.data.followings_count
-      const followersCountData = response.data.followers_count
-      followingsCountTag.textContent = followingsCountData
-      followersCountTag.textContent = followersCountData
-    })
-  })
-</script>
-{% endblock script %}
-
-

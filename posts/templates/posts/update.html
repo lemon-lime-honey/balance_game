@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 밸런스 게임 수정
@@ -58,11 +59,5 @@
     </div>
   </form>
 </div>
+<script type='text/javascript' src="{% static 'posts/js/form.js' %}"></script>
 {% endblock body %}
-
-{% block script %}
-const upload1 = document.getElementById('id_select1_image')
-const upload2 = document.getElementById('id_select2_image')
-upload1.style.display = 'none'
-upload2.style.display = 'none'
-{% endblock script %}

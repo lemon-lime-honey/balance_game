@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block style %}
 .form-floating>.form-control,
@@ -41,13 +42,5 @@
     </div>
   </form>
 </div>
+<script type='text/javascript' src="{% static 'accounts/js/login.js' %}"></script>
 {% endblock body %}
-
-{% block script %}
-const username = document.querySelector('#{{ form.username.id_for_label }}')
-const password = document.querySelector('#{{ form.password.id_for_label }}')
-username.classList.add('form-control')
-password.classList.add('form-control')
-username.placeholder = '아이디를 입력하세요'
-password.placeholder = '비밀번호를 입력하세요'
-{% endblock script %}
