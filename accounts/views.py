@@ -12,8 +12,7 @@ from django.db.models import Count, Prefetch
 
 def profile(request, username):
     User = get_user_model()
-    person = User.objects.prefetch_related('post_set', 'followings', 'followers').annotate(
-        Count('followings'), Count('followers')).get(username=username)
+    person = User.objects.prefetch_related('post_set', 'followings', 'followers').get(username=username)
     context = {
         'person': person,
     }
@@ -75,7 +74,7 @@ def follow(request, user_pk):
         context = {
             'is_followed': is_followed,
             'followings_count': person.followings.count(),
-            'followers_count': person.followers.count(),   
+            'followers_count': person.followers.count(),
         }
         return JsonResponse(context)
     return redirect('accounts:profile', person.username)
