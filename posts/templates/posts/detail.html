@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ post.title }}{% endblock title %}
 
@@ -19,13 +20,13 @@
                 {% endif %}
               </form>
             </th>
-            <td class="align-middle">{{ post.like_users.count }}</td>
+            <td class="align-middle">{{ post.like_users__count }}</td>
           </tr>
           <tr>
             <th scope="row">
               댓글
             </th>
-            <td>{{ comments.count }}</td>
+            <td>{{ comments__count }}</td>
           </tr>
         </tbody>
       </table>
@@ -35,14 +36,36 @@
     <hr>
     <div class="d-flex">
       <div class="col-6">
-        <p class="fs-2">{{ post.select1_users.count }}</p>
+        {% if post.select1_image %}
+        <form action="{% url 'posts:select' post.pk 1 %}" method="POST">
+          {% csrf_token %}
+          <input type="image" src="{{ post.select1_image.url }}" alt="{{ select1_content }}" name="{{ select1_content }}" value="select1_content" class="object-fit-cover border rounded w-100" id="image1">    
+        </form>
+        {% elif post.select2_image %}
+        <form action="{% url 'posts:select' post.pk 1 %}" method="POST">
+          {% csrf_token %}
+          <input type="image" src="{% static 'blank.png' %}" alt="{{ select1_content }}" name="{{ select1_content }}" value="select1_content" class="object-fit-cover border rounded w-100" id="image1">    
+        </form>
+        {% endif %}
+        <p class="fs-2">{{ post.select1_users__count }}</p>
         <form action="{% url 'posts:select' post.pk 1 %}" method="POST">
           {% csrf_token %}
           <input type="submit" value="{{ post.select1_content }}" class="btn fs-4">
         </form>
       </div>
       <div class="col-6">
-        <p class="fs-2">{{ post.select2_users.count }}</p>
+        {% if post.select2_image %}
+        <form action="{% url 'posts:select' post.pk 2 %}" method="POST">
+          {% csrf_token %}
+          <input type="image" src="{{ post.select2_image.url }}" alt="{{ select2_content }}" name="{{ select2_content }}" value="select2_content" class="object-fit-cover border rounded w-100" id="image2">    
+        </form>
+        {% elif post.select1_image %}
+        <form action="{% url 'posts:select' post.pk 2 %}" method="POST">
+          {% csrf_token %}
+          <input type="image" src="{% static 'blank.png' %}" alt="{{ select2_content }}" name="{{ select2_content }}" value="select2_content" class="object-fit-cover border rounded w-100" id="image2">    
+        </form>
+        {% endif %}
+        <p class="fs-2">{{ post.select2_users__count }}</p>
         <form action="{% url 'posts:select' post.pk 2 %}" method="POST">
           {% csrf_token %}
           <input type="submit" value="{{ post.select2_content }}" class="btn fs-4">
@@ -83,7 +106,7 @@
   </table>
   <table class="table">
     <tbody>
-      {% for comment in comments %}
+      {% for comment in post.comment_set.all %}
         <tr>
           <td style="width: 10%;">
             <div>
@@ -96,9 +119,9 @@
               <form action="{% url 'posts:comment_like' post.pk comment.pk %}" method="POST">
                 {% csrf_token %}
                 {% if request.user in comment.like_users.all %}
-                  <input type="submit" value="&heartsuit; {{ comment.like_users.count }}" class="btn btn-sm">
+                  <input type="submit" value="&heartsuit; {{ comment.like_users__count }}" class="btn btn-sm">
                 {% else %}
-                  <input type="submit" value="&#9825; {{ comment.like_users.count }}" class="btn btn-sm">
+                  <input type="submit" value="&#9825; {{ comment.like_users__count }}" class="btn btn-sm">
                 {% endif %}
               </form>
             </div>
@@ -121,4 +144,13 @@
 {% block script %}
 const comment_content = document.getElementById('id_content')
 comment_content.style.width = '100%'
+
+const image1 = document.getElementById('image1')
+const image2 = document.getElementById('image2')
+const width1 = image1.clientWidth
+const width2 = image2.clientWidth
+const height1 = image1.clientHeight
+const height2 = image2.clientHeight
+image1.style.aspectRatio = Math.max(width1 / height1, width2 / height2)
+image2.style.aspectRatio = Math.max(width1 / height1, width2 / height2)
 {% endblock script %}

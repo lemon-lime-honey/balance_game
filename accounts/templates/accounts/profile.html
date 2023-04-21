@@ -42,7 +42,7 @@
   </div>
   <ul class="list-group list-group-flush mb-2">
     <li class="list-group-item text-center fs-4 my-2"><b>작성글</b></li>
-    {% for post in posts %}
+    {% for post in person.post_set.all %}
       <li class="list-group-item">
         <a href="{% url 'posts:detail' post.pk %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ post.title }}</a>
       </li>
@@ -58,7 +58,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        {% for following in followings %}
+        {% for following in person.followings.all %}
           <a href="{% url 'accounts:profile' following %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ following }}</a>
         {% endfor %}
       </div>
@@ -77,8 +77,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        {% for follower in followers %}
-        <a href="{% url 'accounts:profile' follower %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ follower }} </a>
+        {% for follower in person.followers.all %}
+        <a href="{% url 'accounts:profile' follower %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ follower }}</a>
         {% endfor %}
       </div>
       <div class="modal-footer">

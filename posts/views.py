@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Prefetch
 
 
 # Create your views here.
 def index(request):
-    posts = Post.objects.order_by('-pk')
+    posts = Post.objects.annotate(Count('select1_users'), Count('select2_users')).order_by('-pk')
     context = {
         'posts': posts,
     }
@@ -16,7 +17,7 @@ def index(request):
 @login_required
 def create(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
@@ -31,12 +32,12 @@ def create(request):
 
 
 def detail(request, post_pk):
-    post = Post.objects.get(pk=post_pk)
-    comments = post.comment_set.all()
+    post = Post.objects.select_related('user').prefetch_related('like_users',
+        Prefetch('comment_set', queryset=Comment.objects.select_related('user').prefetch_related('like_users').annotate(Count('like_users')))
+        ).annotate(Count('like_users'), Count('select1_users'), Count('select2_users')).get(pk=post_pk)
     comment_form = CommentForm()
     context = {
         'post': post, 
-        'comments': comments,
         'comment_form': comment_form,
     }
     return render(request, 'posts/detail.html', context)
@@ -55,7 +56,7 @@ def update(request, post_pk):
     post = Post.objects.get(pk=post_pk)
     if post.user == request.user:
         if request.method == 'POST':
-            form = PostForm(request.POST, instance=post)
+            form = PostForm(request.POST, request.FILES, instance=post)
             if form.is_valid():
                 form.save()
                 return redirect('posts:detail', post.pk)
