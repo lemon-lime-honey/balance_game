@@ -19,7 +19,7 @@
     <div class="d-flex m-3 align-items-center">
       <h3 class="m-0 me-2">{{ person }}</h3>
       {% if request.user != person %}
-        <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+        <form id="follow-form" data-user-id="{{ person.pk }}">
           {% csrf_token %}
           {% if request.user in person.followers.all %}
           <input type="submit" value='언팔로우' class="btn btn-sm btn-outline-primary" {% if not request.user.is_authenticated %}disabled{% endif %}>
@@ -31,10 +31,12 @@
     </div>
     <div class="d-flex align-items-center">
       <button type="button" class="btn btn-sm me-1" data-bs-toggle="modal" data-bs-target="#followings" id="follow">
-        팔로잉 {{ followings|length }}
+        팔로잉
+       <span id="followings-count">{{ person.followings.all|length }}</span>
       </button>
       <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#followers" id="follow">
-        팔로워 {{ followers|length }}
+        팔로워 
+        <span id="followers-count">{{ person.followers.all|length }}</span>
       </button>
     </div>
   </div>
@@ -76,7 +78,7 @@
       </div>
       <div class="modal-body">
         {% for follower in followers %}
-        <a href="{% url 'accounts:profile' follower %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ follower }}</a>
+        <a href="{% url 'accounts:profile' follower %}" class="link-dark link-underline link-underline-opacity-0 fs-5">{{ follower }} </a>
         {% endfor %}
       </div>
       <div class="modal-footer">
@@ -86,5 +88,56 @@
   </div>
 </div>
 
+{% comment %} <div>
+  팔로잉 : <span id="followings-count">{{ person.followings.all|length }}</span> / 
+  팔로워 : <span id="followers-count">{{ person.followers.all|length }}</span>
+</div>
+
+{% if request.user != person %}
+  <div>
+    <form id="follow-form" data-user-id="{{ person.pk }}">
+      {% csrf_token %}
+      {% if request.user in person.followers.all %}
+        <input type="submit" value="언팔로우">
+      {% else %}
+        <input type="submit" value="팔로우">
+      {% endif %}
+    </form>
+  </div>
+{% endif %} {% endcomment %}
 
 {% endblock body %}
+
+
+{% block script %}
+<script>
+  const form = document.querySelector('#follow-form')
+  const csrftoken =  document.querySelector('[name=csrfmiddlewaretoken]').value
+  form.addEventListener('submit', function (event) {
+    event.preventDefault()
+    const userId = event.target.dataset.userId
+    axios({
+      method:'POST',
+      url:`/accounts/follow/${userId}/`,
+      headers: {'X-CSRFToken':csrftoken,}
+    })
+    .then((response) => {
+      const isFollowed = response.data.is_followed
+      const followBtn = document.querySelector('#follow-form > input[type=submit]')
+      if (isFollowed === true) {
+        followBtn.value = '언팔로우'
+      } else {
+        followBtn.value = '팔로우'
+      }
+      const followingsCountTag = document.querySelector('#followings-count')
+      const followersCountTag = document.querySelector('#followers-count')
+      const followingsCountData = response.data.followings_count
+      const followersCountData = response.data.followers_count
+      followingsCountTag.textContent = followingsCountData
+      followersCountTag.textContent = followersCountData
+    })
+  })
+</script>
+{% endblock script %}
+
+
