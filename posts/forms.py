@@ -32,9 +32,17 @@ class PostForm(forms.ModelForm):
             }
         )
     )
+    select1_image = forms.ImageField(
+        label='1번 이미지',
+        required=False,
+    )
+    select2_image = forms.ImageField(
+        label='2번 이미지',
+        required=False,
+    )
     class Meta:
         model = Post
-        fields = ('title', 'select1_content', 'select2_content',)
+        fields = ('title', 'select1_content', 'select2_content', 'select1_image', 'select2_image')
 
 
 class CommentForm(forms.ModelForm):
