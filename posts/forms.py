@@ -1,6 +1,9 @@
 from django import forms
 from .models import Post, Comment
 
+class imageForm(forms.Form):
+    image = forms.ImageField()
+
 
 class PostForm(forms.ModelForm):
     title = forms.CharField(

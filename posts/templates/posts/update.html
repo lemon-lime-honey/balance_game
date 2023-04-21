@@ -46,11 +46,9 @@
     <div class="d-flex">
       <div class="mb-3 col-6">
         {{ form.select1_image }}
-        <label for="{{ form.select1_image.id_for_label }}" class="btn btn-sm btn-outline-dark align-bottom" style="width: 100%;">1번 사진</label>
       </div>
       <div class="mb-3 col-6">
         {{ form.select2_image }}
-        <label for="{{ form.select2_image.id_for_label }}" class="btn btn-sm btn-outline-dark" style="width: 100%;">2번 사진</label>
       </div>
     </div>
     <div class="d-flex justify-content-end">
@@ -59,5 +57,4 @@
     </div>
   </form>
 </div>
-<script type='text/javascript' src="{% static 'posts/js/form.js' %}"></script>
 {% endblock body %}
