@@ -23,9 +23,9 @@
 {% endblock style %}
 
 {% block body %}
-<div class="container w-50">
+<div class="container col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
   <h1 class="my-5 text-center">게임 수정</h1>
-  <form action="{% url 'posts:update' post.pk %}" method="POST">
+  <form action="{% url 'posts:update' post.pk %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-floating mb-3">
       {{ form.title }}
@@ -42,6 +42,16 @@
         <label for="{{ form.select2_content_id_for_label }}">2번 선택지</label>
       </div>
     </div>
+    <div class="d-flex">
+      <div class="mb-3 col-6">
+        {{ form.select1_image }}
+        <label for="{{ form.select1_image.id_for_label }}" class="btn btn-sm btn-outline-dark align-bottom" style="width: 100%;">1번 사진</label>
+      </div>
+      <div class="mb-3 col-6">
+        {{ form.select2_image }}
+        <label for="{{ form.select2_image.id_for_label }}" class="btn btn-sm btn-outline-dark" style="width: 100%;">2번 사진</label>
+      </div>
+    </div>
     <div class="d-flex justify-content-end">
       <a href="{% url 'posts:index' %}" class="me-2 btn btn-outline-danger">메인</a>
       <input type="submit" value="수정" class="btn btn-outline-primary">
@@ -50,6 +60,9 @@
 </div>
 {% endblock body %}
 
-
 {% block script %}
+const upload1 = document.getElementById('id_select1_image')
+const upload2 = document.getElementById('id_select2_image')
+upload1.style.display = 'none'
+upload2.style.display = 'none'
 {% endblock script %}

@@ -17,7 +17,7 @@ def index(request):
 # @login_required
 def create(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
@@ -56,7 +56,7 @@ def update(request, post_pk):
     post = Post.objects.get(pk=post_pk)
     if post.user == request.user:
         if request.method == 'POST':
-            form = PostForm(request.POST, instance=post)
+            form = PostForm(request.POST, request.FILES, instance=post)
             if form.is_valid():
                 form.save()
                 return redirect('posts:detail', post.pk)

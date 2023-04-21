@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ post.title }}{% endblock title %}
 
 {% block body %}
-<div class="card w-50 m-auto">
+<div class="card m-auto col-12 col-md-6 offset-md-3">
   <div class="card-body text-center">
     <div class="d-flex justify-content-between align-items-center">
       <table class="table text-center table-sm table-borderless m-0" style="font-size: 10pt; width: 10%;">
@@ -35,6 +36,17 @@
     <hr>
     <div class="d-flex">
       <div class="col-6">
+        {% if post.select1_image %}
+        <form action="{% url 'posts:select' post.pk 1 %}" method="POST">
+          {% csrf_token %}
+          <input type="image" src="{{ post.select1_image.url }}" alt="{{ select1_content }}" name="{{ select1_content }}" value="select1_content" class="object-fit-cover border rounded w-100" id="image1">    
+        </form>
+        {% elif post.select2_image %}
+        <form action="{% url 'posts:select' post.pk 1 %}" method="POST">
+          {% csrf_token %}
+          <input type="image" src="{% static 'blank.png' %}" alt="{{ select1_content }}" name="{{ select1_content }}" value="select1_content" class="object-fit-cover border rounded w-100" id="image1">    
+        </form>
+        {% endif %}
         <p class="fs-2">{{ post.select1_users__count }}</p>
         <form action="{% url 'posts:select' post.pk 1 %}" method="POST">
           {% csrf_token %}
@@ -42,6 +54,17 @@
         </form>
       </div>
       <div class="col-6">
+        {% if post.select2_image %}
+        <form action="{% url 'posts:select' post.pk 2 %}" method="POST">
+          {% csrf_token %}
+          <input type="image" src="{{ post.select2_image.url }}" alt="{{ select2_content }}" name="{{ select2_content }}" value="select2_content" class="object-fit-cover border rounded w-100" id="image2">    
+        </form>
+        {% elif post.select1_image %}
+        <form action="{% url 'posts:select' post.pk 2 %}" method="POST">
+          {% csrf_token %}
+          <input type="image" src="{% static 'blank.png' %}" alt="{{ select2_content }}" name="{{ select2_content }}" value="select2_content" class="object-fit-cover border rounded w-100" id="image2">    
+        </form>
+        {% endif %}
         <p class="fs-2">{{ post.select2_users__count }}</p>
         <form action="{% url 'posts:select' post.pk 2 %}" method="POST">
           {% csrf_token %}
@@ -63,7 +86,7 @@
     </div>
   </div>
 </div>
-<div class="container w-50 mt-3">
+<div class="container mt-3 col-12 col-md-6 offset-md-3">
   <table class="table table-borderless">
     <tr>
       {% if request.user.is_authenticated %}
@@ -121,4 +144,13 @@
 {% block script %}
 const comment_content = document.getElementById('id_content')
 comment_content.style.width = '100%'
+
+const image1 = document.getElementById('image1')
+const image2 = document.getElementById('image2')
+const width1 = image1.clientWidth
+const width2 = image2.clientWidth
+const height1 = image1.clientHeight
+const height2 = image2.clientHeight
+image1.style.aspectRatio = Math.max(width1 / height1, width2 / height2)
+image2.style.aspectRatio = Math.max(width1 / height1, width2 / height2)
 {% endblock script %}
